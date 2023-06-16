@@ -1,10 +1,15 @@
 import React from "react";
+import Navbar from "../components/Navbar/Navbar";
+import DashboardHeader from "../components/Dashboard/DashboardHeader";
+import VideoCards from "../components/Dashboard/VideoCards";
 
 const AdminDashboardPage = () => {
   return (
     <>
-      <div className="w-full flex justify-center items-center text-7xl h-screen text-gray-700 ">
-        Dashboard
+      <div className='container mx-auto w-full h-screen font-inter font-thin text-white'>
+        <Navbar />
+        <DashboardHeader />
+        <VideoCards />
       </div>
     </>
   );

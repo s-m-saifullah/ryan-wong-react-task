@@ -12,9 +12,34 @@ export default function MkdSDK() {
   this.setTable = function (table) {
     this._table = table;
   };
-  
+
   this.login = async function (email, password, role) {
-    //TODO
+    // TODO
+    const response = await fetch(this._baseurl + "/v2/api/lambda/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-project":
+          "cmVhY3R0YXNrOmQ5aGVkeWN5djZwN3p3OHhpMzR0OWJtdHNqc2lneTV0Nw==",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        role: role,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("isAuthenticated", true);
+
+    return data;
   };
 
   this.getHeader = function () {
@@ -27,7 +52,7 @@ export default function MkdSDK() {
   this.baseUrl = function () {
     return this._baseurl;
   };
-  
+
   this.callRestAPI = async function (payload, method) {
     const header = {
       "Content-Type": "application/json",
@@ -55,7 +80,7 @@ export default function MkdSDK() {
           throw new Error(jsonGet.message);
         }
         return jsonGet;
-      
+
       case "PAGINATE":
         if (!payload.page) {
           payload.page = 1;
@@ -84,10 +109,31 @@ export default function MkdSDK() {
       default:
         break;
     }
-  };  
+  };
 
   this.check = async function (role) {
-    //TODO
+    // TODO
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const response = await fetch(this._baseurl + "/v2/api/lambda/check", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-project":
+          "cmVhY3R0YXNrOmQ5aGVkeWN5djZwN3p3OHhpMzR0OWJtdHNqc2lneTV0Nw==",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({ role: role }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+
+    return data;
   };
 
   return this;
